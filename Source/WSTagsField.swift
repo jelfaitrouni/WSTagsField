@@ -380,9 +380,9 @@ open class WSTagsField: UIScrollView {
         if let onValidateTag = onValidateTag, !onValidateTag(tag, self.tags) {
             return
         }
-        else if self.tags.contains(tag) {
-            return
-        }
+//        else if self.tags.contains(tag) {
+//            return
+//        }
 
         self.tags.append(tag)
 
