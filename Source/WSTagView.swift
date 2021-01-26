@@ -11,6 +11,8 @@ import UIKit
 open class WSTagView: UIView, UITextInputTraits {
 
     fileprivate let textLabel = UILabel()
+
+    public var textField = BackspaceDetectingTextField()
     
     open var displayText: String = "" {
         didSet {
@@ -79,6 +81,12 @@ open class WSTagView: UIView, UITextInputTraits {
 
     open var selected: Bool = false {
         didSet {
+            if selected  {
+                textField.becomeFirstResponder()// = becomeFirstResponder()
+            }
+            else if !selected {
+                textField.resignFirstResponder()
+            }
             updateContent(animated: true)
         }
     }
@@ -114,6 +122,15 @@ open class WSTagView: UIView, UITextInputTraits {
 
         self.displayText = tag.text
         updateLabelText()
+        
+        textField = BackspaceDetectingTextField()
+        textField.isHidden = true
+        textField.delegate = self
+        textField.onDeleteBackwards = { [weak self] in
+            self?.onDidRequestDelete?(self!, nil)
+            self?.textField.resignFirstResponder()
+        }
+        addSubview(textField)
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer))
         addGestureRecognizer(tapRecognizer)
