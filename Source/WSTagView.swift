@@ -81,11 +81,11 @@ open class WSTagView: UIView, UITextInputTraits {
 
     open var selected: Bool = false {
         didSet {
-            if selected && !isFirstResponder {
-                _ = becomeFirstResponder()
+            if selected  {
+                textField.becomeFirstResponder()// = becomeFirstResponder()
             }
-            else if !selected && isFirstResponder {
-                _ = resignFirstResponder()
+            else if !selected {
+                textField.resignFirstResponder()
             }
             updateContent(animated: true)
         }
@@ -218,21 +218,21 @@ open class WSTagView: UIView, UITextInputTraits {
     }
 
     // MARK: - First Responder (needed to capture keyboard)
-    open override var canBecomeFirstResponder: Bool {
-        return true
-    }
-
-    open override func becomeFirstResponder() -> Bool {
-        let didBecomeFirstResponder = textField.becomeFirstResponder()
-        selected = true
-        return didBecomeFirstResponder
-    }
-
-    open override func resignFirstResponder() -> Bool {
-        let didResignFirstResponder = textField.resignFirstResponder()
-        selected = false
-        return didResignFirstResponder
-    }
+//    open override var canBecomeFirstResponder: Bool {
+//        return true
+//    }
+//
+//    open override func becomeFirstResponder() -> Bool {
+//        let didBecomeFirstResponder = textField.becomeFirstResponder()
+//        selected = true
+//        return didBecomeFirstResponder
+//    }
+//
+//    open override func resignFirstResponder() -> Bool {
+//        let didResignFirstResponder = textField.resignFirstResponder()
+//        selected = false
+//        return didResignFirstResponder
+//    }
 
     // MARK: - Gesture Recognizers
     @objc func handleTapGestureRecognizer(_ sender: UITapGestureRecognizer) {
