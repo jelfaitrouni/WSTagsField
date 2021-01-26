@@ -12,6 +12,8 @@ open class WSTagView: UIView, UITextInputTraits {
 
     fileprivate let textLabel = UILabel()
 
+    public var textField = BackspaceDetectingTextField()
+    
     open var displayText: String = "" {
         didSet {
             updateLabelText()
@@ -120,6 +122,15 @@ open class WSTagView: UIView, UITextInputTraits {
 
         self.displayText = tag.text
         updateLabelText()
+        
+        textField = BackspaceDetectingTextField()
+        textField.isHidden = true
+        textField.delegate = self
+        textField.onDeleteBackwards = { [weak self] in
+            self?.onDidRequestDelete?(self!, nil)
+            self?.textField.resignFirstResponder()
+        }
+        addSubview(textField)
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer))
         addGestureRecognizer(tapRecognizer)
@@ -212,13 +223,13 @@ open class WSTagView: UIView, UITextInputTraits {
     }
 
     open override func becomeFirstResponder() -> Bool {
-        let didBecomeFirstResponder = super.becomeFirstResponder()
+        let didBecomeFirstResponder = textField.becomeFirstResponder()
         selected = true
         return didBecomeFirstResponder
     }
 
     open override func resignFirstResponder() -> Bool {
-        let didResignFirstResponder = super.resignFirstResponder()
+        let didResignFirstResponder = textField.resignFirstResponder()
         selected = false
         return didResignFirstResponder
     }
@@ -231,6 +242,14 @@ open class WSTagView: UIView, UITextInputTraits {
         onDidRequestSelection?(self)
     }
 
+}
+
+
+extension WSTagView: UITextFieldDelegate {
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        onDidInputText?(self, string)
+        return true
+    }
 }
 
 extension WSTagView: UIKeyInput {
